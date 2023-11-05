@@ -87,14 +87,12 @@ int main() {
         glm::mat4 view = glm::lookAt(camera.transform.position, camera.transform.position + camera.front, camera.up);
         shader->set("view", view);
 
-        // render chunks
-        for (const std::vector<Cube>& chunk : chunks) {
-            for (const Cube& cube : chunk) {
-                Renderer::draw(cube, shader);
-            }
+        // render visible chunks
+        std::vector<Cube> cubes = chunkGenerator.getVisible(chunks[0]);
+        for (const Cube& cube : cubes) {
+            Renderer::draw(cube, shader);
         }
         
-
         // swap buffers and poll for input events
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -122,7 +120,7 @@ GLFWwindow* initialize() {
     GLFWwindow* window = glfwCreateWindow(
         SCREEN_WIDTH, 
         SCREEN_HEIGHT, 
-        "SimpleRenderer", 
+        "VoxelCraft", 
         nullptr, 
         nullptr);
     if (!window) {

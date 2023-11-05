@@ -47,6 +47,7 @@ public:
 		transform = cube.transform;
 		return *this;
 	}
+
 };
 
 #endif
