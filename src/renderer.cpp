@@ -11,8 +11,11 @@ void Renderer::draw(const Cube& cube, const std::shared_ptr<Shader>& shader) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, CUBE_INDICES.size() * sizeof(uint32_t), CUBE_INDICES.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0); // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0); // positions
     glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float))); // normals
+    glEnableVertexAttribArray(1);
 
     // Apply matrix transformation and set shader uniforms
     glm::mat4 model = glm::mat4(1.0f);
@@ -38,7 +41,8 @@ void Renderer::draw(const Square& square, const std::shared_ptr<Shader>& shader)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, SQUARE_INDICES.size() * sizeof(uint32_t), SQUARE_INDICES.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0); // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0); // positions
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)3); // normals
     glEnableVertexAttribArray(0);
 
     // Apply matrix transformation and set shader uniforms

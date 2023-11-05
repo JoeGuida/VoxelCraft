@@ -7,7 +7,7 @@ std::vector<std::vector<Cube>> ChunkGenerator::generateChunks(float drawDistance
 	std::vector<std::vector<Cube>> chunks;
 
 	// reserve and assign chunks
-	Cube cube(Material(glm::vec3(0.5f)), Transform(glm::vec3(0.0f)));
+	Cube cube(Material(glm::vec3(1.0f, 0.0f, 0.0f)), Transform(glm::vec3(0.0f)));
 	std::vector<Cube> cubes;
 
 	cubes.reserve(numCubes);
@@ -21,7 +21,7 @@ std::vector<std::vector<Cube>> ChunkGenerator::generateChunks(float drawDistance
 		for (unsigned int y = 0; y < CHUNK_SIZE.y; y++) {
 			for (unsigned int z = 0; z < CHUNK_SIZE.z; z++) {
 				for (unsigned int x = 0; x < CHUNK_SIZE.x; x++) {
-					glm::vec3 pos(CUBE_SIZE * 2 * x, CUBE_SIZE * 2 * y, CUBE_SIZE * 2 * z);
+					glm::vec3 pos(CUBE_SIZE * x, CUBE_SIZE * y, CUBE_SIZE * z);
 					chunks[i][x + (z * CHUNK_SIZE.z) + y * (CHUNK_SIZE.x * CHUNK_SIZE.y)].transform.position = pos;
 				}
 			}

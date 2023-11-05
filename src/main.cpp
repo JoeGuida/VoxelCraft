@@ -9,6 +9,7 @@
 #include "chunkgenerator.hpp"
 #include "camera.hpp"
 #include "cube.hpp"
+#include "light.hpp"
 #include "renderer.hpp"
 #include "shader.hpp"
 
@@ -58,7 +59,15 @@ int main() {
     glm::vec3 front(0.0f, 0.0f, -1.0f);
     glm::vec3 right(glm::cross(front, worldUp));
     glm::vec3 up(glm::cross(front, right));
-    camera = Camera(ASPECT_RATIO, 90.0f, 0.1f, 100.0f, front, right, up, Transform(pos, Rotation(0.0f, -90.0f, 0.0f)));
+    camera = Camera(
+        ASPECT_RATIO, 
+        90.0f, 
+        0.1f, 
+        100.0f, 
+        front, 
+        right, 
+        up, 
+        Transform(pos, Rotation(0.0f, -90.0f, 0.0f)));
 
     // --------------------------------------------------------------------------------------------
     // Object Setup
@@ -68,6 +77,16 @@ int main() {
     long seed = distribution(generator);
     ChunkGenerator chunkGenerator(seed);
     std::vector<std::vector<Cube>> chunks = chunkGenerator.generateChunks(drawDistance, camera.transform.position);
+
+
+    // --------------------------------------------------------------------------------------------
+    // Lighting Setup
+    // --------------------------------------------------------------------------------------------
+    AmbientLight ambientLight(0.2f);
+    DirectionalLight directionalLight(0.5f, glm::vec3(1.0f, -1.0f, -1.0f));
+    shader->set("aLightIntensity", ambientLight.getIntensity());
+    shader->set("dLightIntensity", directionalLight.getIntensity());
+    shader->set("dLightDirection", directionalLight.getDirection());
 
     // --------------------------------------------------------------------------------------------
     // Render Loop
@@ -92,7 +111,7 @@ int main() {
         for (const Cube& cube : cubes) {
             Renderer::draw(cube, shader);
         }
-        
+
         // swap buffers and poll for input events
         glfwSwapBuffers(window);
         glfwPollEvents();

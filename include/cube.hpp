@@ -17,17 +17,17 @@ constexpr std::array<uint32_t, 36> CUBE_INDICES = {
 	2, 3, 6, 6, 7, 3  // bottom face
 };
 
-constexpr std::array<float, 24> CUBE_VERTICES = {
-	// front face
-	-CUBE_SIZE, CUBE_SIZE, 0.0f,
-	CUBE_SIZE, CUBE_SIZE, 0.0f,
-	-CUBE_SIZE, -CUBE_SIZE, 0.0f,
-	CUBE_SIZE, -CUBE_SIZE, 0.0f,
+constexpr std::array<float, 48> CUBE_VERTICES = {
+	// positions						// normals
+	-CUBE_SIZE,  CUBE_SIZE,	CUBE_SIZE,	0.0f, 1.0f, 0.0f,
+	 CUBE_SIZE,  CUBE_SIZE,	CUBE_SIZE,	0.0f, 1.0f, 0.0f,
+	-CUBE_SIZE, -CUBE_SIZE,	CUBE_SIZE,	0.0f, -1.0f, 0.0f,
+	 CUBE_SIZE, -CUBE_SIZE,	CUBE_SIZE,	0.0f, -1.0f, 0.0f,
 
-	-CUBE_SIZE, CUBE_SIZE, -CUBE_SIZE * 2,
-	CUBE_SIZE, CUBE_SIZE, -CUBE_SIZE * 2,
-	-CUBE_SIZE, -CUBE_SIZE, -CUBE_SIZE * 2,
-	CUBE_SIZE, -CUBE_SIZE, -CUBE_SIZE * 2
+	-CUBE_SIZE,  CUBE_SIZE, -CUBE_SIZE, 0.0f, 1.0f, 0.0f,
+	 CUBE_SIZE,  CUBE_SIZE, -CUBE_SIZE, 0.0f, 1.0f, 0.0f,
+	-CUBE_SIZE, -CUBE_SIZE, -CUBE_SIZE, 0.0f, -1.0f, 0.0f,
+	 CUBE_SIZE, -CUBE_SIZE, -CUBE_SIZE, 0.0f, -1.0f, 0.0f
 };
 
 class Cube {
