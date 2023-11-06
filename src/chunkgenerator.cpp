@@ -21,7 +21,7 @@ std::vector<std::vector<Cube>> ChunkGenerator::generateChunks(float drawDistance
 		for (unsigned int y = 0; y < CHUNK_SIZE.y; y++) {
 			for (unsigned int z = 0; z < CHUNK_SIZE.z; z++) {
 				for (unsigned int x = 0; x < CHUNK_SIZE.x; x++) {
-					glm::vec3 pos(CUBE_SIZE * x, CUBE_SIZE * y, CUBE_SIZE * z);
+					glm::vec3 pos(CUBE_SIZE * x * 2, CUBE_SIZE * y * 2, CUBE_SIZE * z * 2);
 					chunks[i][x + (z * CHUNK_SIZE.z) + y * (CHUNK_SIZE.x * CHUNK_SIZE.y)].transform.position = pos;
 				}
 			}
