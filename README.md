@@ -1,4 +1,4 @@
-# Raycaster
+# Voxelcraft
 This project is a world generator / voxel renderer made using C++17, OpenGL and GLFW, also using stb_image for textures.
 I am interested in understanding how games like minecraft generate the worlds and how that works
 in terms of graphics so this project is a way to understand the process better
