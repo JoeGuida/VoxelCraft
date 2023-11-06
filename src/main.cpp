@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/vec3.hpp>
+#include <stb_image.h>
 
 #include <iostream>
 #include <random>
@@ -36,7 +37,6 @@ float lastX = centerX;
 float lastY = centerY;
 
 // Camera
-const glm::vec3 worldUp(0.0f, 1.0f, 0.0f);
 float drawDistance = 5.0f;
 Camera camera;
 
@@ -57,8 +57,8 @@ int main() {
     // --------------------------------------------------------------------------------------------
     glm::vec3 pos(0.0f, 0.0f, 1.0f);
     glm::vec3 front(0.0f, 0.0f, -1.0f);
-    glm::vec3 right(glm::cross(front, worldUp));
-    glm::vec3 up(glm::cross(front, right));
+    glm::vec3 right(1.0f, 0.0f, 0.0f);
+    glm::vec3 up(0.0f, 1.0f, 0.0f);
     camera = Camera(
         ASPECT_RATIO, 
         90.0f, 
@@ -78,6 +78,35 @@ int main() {
     ChunkGenerator chunkGenerator(seed);
     std::vector<std::vector<Cube>> chunks = chunkGenerator.generateChunks(drawDistance, camera.transform.position);
 
+    // --------------------------------------------------------------------------------------------
+    // Texture Setup
+    // --------------------------------------------------------------------------------------------
+    int width, height, numChannels;
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char* data = stbi_load(
+        (FileSystem::getPath("/src/textures/") + "main_atlas.png").c_str(), 
+        &width, 
+        &height, 
+        &numChannels, 
+        0);
+
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    if (data) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+        stbi_image_free(data);
+    }
+    else {
+        std::cout << "Failed to load texture" << std::endl;
+    }
 
     // --------------------------------------------------------------------------------------------
     // Lighting Setup
@@ -107,10 +136,13 @@ int main() {
         shader->set("view", view);
 
         // render visible chunks
-        std::vector<Cube> cubes = chunkGenerator.getVisible(chunks[0]);
-        for (const Cube& cube : cubes) {
-            Renderer::draw(cube, shader);
+        for (const std::vector<Cube>& chunk : chunks) {
+            std::vector<Cube> cubes = chunkGenerator.getVisible(chunk);
+            for (const Cube& cube : cubes) {
+                ;// Renderer::draw(cube, shader);
+            }
         }
+        Renderer::draw(chunks[0][0], shader);
 
         // swap buffers and poll for input events
         glfwSwapBuffers(window);

@@ -7,27 +7,54 @@
 #include "transform.hpp"
 
 constexpr float CUBE_SIZE = 0.2f;
+constexpr float TEXTURE_OFFSET = (1.0f / 8.0f);
 
 constexpr std::array<uint32_t, 36> CUBE_INDICES = {
-	0, 1, 2, 2, 3, 1, // front face
-	1, 5, 3, 3, 7, 5, // right face
-	5, 4, 7, 7, 6, 4, // back face
-	4, 0, 6, 6, 2, 0, // left face
-	4, 0, 1, 1, 4, 5, // top face
-	2, 3, 6, 6, 7, 3  // bottom face
+	 0,  1,  2,  2,  3,  1, // front face
+	 4,  5,  6,  6,  7,  5, // right face
+	 8,  9, 10, 10, 11,  9, // back face
+	12, 13, 14, 14, 15, 13, // left face
+	16, 17, 18, 18, 19, 17, // top face
+	20, 21, 22, 22, 23, 21, // bottom face
 };
 
-constexpr std::array<float, 48> CUBE_VERTICES = {
-	// positions						// normals
-	-CUBE_SIZE,  CUBE_SIZE,	CUBE_SIZE,	0.0f, 1.0f, 0.0f,
-	 CUBE_SIZE,  CUBE_SIZE,	CUBE_SIZE,	0.0f, 1.0f, 0.0f,
-	-CUBE_SIZE, -CUBE_SIZE,	CUBE_SIZE,	0.0f, -1.0f, 0.0f,
-	 CUBE_SIZE, -CUBE_SIZE,	CUBE_SIZE,	0.0f, -1.0f, 0.0f,
-
-	-CUBE_SIZE,  CUBE_SIZE, -CUBE_SIZE, 0.0f, 1.0f, 0.0f,
-	 CUBE_SIZE,  CUBE_SIZE, -CUBE_SIZE, 0.0f, 1.0f, 0.0f,
-	-CUBE_SIZE, -CUBE_SIZE, -CUBE_SIZE, 0.0f, -1.0f, 0.0f,
-	 CUBE_SIZE, -CUBE_SIZE, -CUBE_SIZE, 0.0f, -1.0f, 0.0f
+constexpr std::array<float, 192> CUBE_VERTICES = {
+	// front face
+	// positions						// normals		  // texCoords
+	-CUBE_SIZE,  CUBE_SIZE,	 CUBE_SIZE,	0.0f, 0.0f, 1.0f, TEXTURE_OFFSET,     1.0f,
+	 CUBE_SIZE,  CUBE_SIZE,	 CUBE_SIZE,	0.0f, 0.0f, 1.0f, TEXTURE_OFFSET * 2, 1.0f,
+	-CUBE_SIZE, -CUBE_SIZE,	 CUBE_SIZE,	0.0f, 0.0f, 1.0f, TEXTURE_OFFSET,	  1.0f - TEXTURE_OFFSET,
+	 CUBE_SIZE, -CUBE_SIZE,	 CUBE_SIZE,	0.0f, 0.0f, 1.0f, TEXTURE_OFFSET * 2, 1.0f - TEXTURE_OFFSET,
+	// right face
+	// positions					   // normals		 // texCoords
+	CUBE_SIZE,  CUBE_SIZE,  CUBE_SIZE, 1.0f, 0.0f, 0.0f, TEXTURE_OFFSET,     1.0f,
+	CUBE_SIZE,  CUBE_SIZE, -CUBE_SIZE, 1.0f, 0.0f, 0.0f, TEXTURE_OFFSET * 2, 1.0f,
+	CUBE_SIZE, -CUBE_SIZE,  CUBE_SIZE, 1.0f, 0.0f, 0.0f, TEXTURE_OFFSET,     1.0f - TEXTURE_OFFSET,
+	CUBE_SIZE, -CUBE_SIZE, -CUBE_SIZE, 1.0f, 0.0f, 0.0f, TEXTURE_OFFSET * 2, 1.0f - TEXTURE_OFFSET,
+	// back face
+	// positions						// normals		   // texCoords
+	 CUBE_SIZE,  CUBE_SIZE, -CUBE_SIZE, 0.0f, 0.0f, -1.0f, TEXTURE_OFFSET,     1.0f,
+	-CUBE_SIZE,  CUBE_SIZE, -CUBE_SIZE, 0.0f, 0.0f, -1.0f, TEXTURE_OFFSET * 2, 1.0f,
+	 CUBE_SIZE, -CUBE_SIZE, -CUBE_SIZE, 0.0f, 0.0f, -1.0f, TEXTURE_OFFSET,     1.0f - TEXTURE_OFFSET,
+	-CUBE_SIZE, -CUBE_SIZE, -CUBE_SIZE, 0.0f, 0.0f, -1.0f, TEXTURE_OFFSET * 2, 1.0f - TEXTURE_OFFSET,
+	// left face
+	// positions						// normals		   // texCoords
+	-CUBE_SIZE,  CUBE_SIZE, -CUBE_SIZE, -1.0f, 0.0f, 0.0f, TEXTURE_OFFSET,     1.0f,
+	-CUBE_SIZE,  CUBE_SIZE,  CUBE_SIZE, -1.0f, 0.0f, 0.0f, TEXTURE_OFFSET * 2, 1.0f,
+	-CUBE_SIZE, -CUBE_SIZE, -CUBE_SIZE, -1.0f, 0.0f, 0.0f, TEXTURE_OFFSET,     1.0f - TEXTURE_OFFSET,
+	-CUBE_SIZE, -CUBE_SIZE,  CUBE_SIZE, -1.0f, 0.0f, 0.0f, TEXTURE_OFFSET * 2, 1.0f - TEXTURE_OFFSET,
+	// top face
+	// positions					   // normals		 // texCoords
+	 CUBE_SIZE, CUBE_SIZE,  CUBE_SIZE, 0.0f, 1.0f, 0.0f, 0.0f,			 1.0f,
+	-CUBE_SIZE, CUBE_SIZE,  CUBE_SIZE, 0.0f, 1.0f, 0.0f, TEXTURE_OFFSET, 1.0f,
+	 CUBE_SIZE, CUBE_SIZE, -CUBE_SIZE, 0.0f, 1.0f, 0.0f, 0.0f,			 1.0f - TEXTURE_OFFSET,
+	-CUBE_SIZE, CUBE_SIZE, -CUBE_SIZE, 0.0f, 1.0f, 0.0f, TEXTURE_OFFSET, 1.0f - TEXTURE_OFFSET,
+	// bottom face
+	// positions						// normals		   // texCoords
+	-CUBE_SIZE, -CUBE_SIZE, -CUBE_SIZE, 0.0f, -1.0f, 0.0f, TEXTURE_OFFSET * 2, 1.0f,
+	 CUBE_SIZE, -CUBE_SIZE, -CUBE_SIZE, 0.0f, -1.0f, 0.0f, TEXTURE_OFFSET * 3, 1.0f,
+	-CUBE_SIZE, -CUBE_SIZE,  CUBE_SIZE, 0.0f, -1.0f, 0.0f, TEXTURE_OFFSET * 2, 1.0f - TEXTURE_OFFSET,
+	 CUBE_SIZE, -CUBE_SIZE,  CUBE_SIZE, 0.0f, -1.0f, 0.0f, TEXTURE_OFFSET * 3, 1.0f - TEXTURE_OFFSET
 };
 
 class Cube {

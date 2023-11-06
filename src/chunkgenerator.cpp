@@ -7,7 +7,7 @@ std::vector<std::vector<Cube>> ChunkGenerator::generateChunks(float drawDistance
 	std::vector<std::vector<Cube>> chunks;
 
 	// reserve and assign chunks
-	Cube cube(Material(glm::vec3(1.0f, 0.0f, 0.0f)), Transform(glm::vec3(0.0f)));
+	Cube cube(Material(glm::vec3(0.5f)), Transform(glm::vec3(0.0f)));
 	std::vector<Cube> cubes;
 
 	cubes.reserve(numCubes);
