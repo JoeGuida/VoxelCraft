@@ -10,7 +10,6 @@
 #include "chunkgenerator.hpp"
 #include "camera.hpp"
 #include "cube.hpp"
-#include "light.hpp"
 #include "renderer.hpp"
 #include "shader.hpp"
 
@@ -109,15 +108,6 @@ int main() {
     }
 
     // --------------------------------------------------------------------------------------------
-    // Lighting Setup
-    // --------------------------------------------------------------------------------------------
-    AmbientLight ambientLight(0.2f);
-    DirectionalLight directionalLight(0.5f, glm::vec3(1.0f, -1.0f, -1.0f));
-    shader->set("aLightIntensity", ambientLight.getIntensity());
-    shader->set("dLightIntensity", directionalLight.getIntensity());
-    shader->set("dLightDirection", directionalLight.getDirection());
-
-    // --------------------------------------------------------------------------------------------
     // Render Loop
     // --------------------------------------------------------------------------------------------
     glm::mat4 projection = glm::perspective(camera.fov, camera.aspect, camera.near, camera.far);
@@ -184,6 +174,7 @@ GLFWwindow* initialize() {
     glfwSetKeyCallback(window, processInput);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, mouseCallback);
+    glfwSetCursorPos(window, centerX, centerY);
 
     // Initialize GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -231,8 +222,8 @@ void processInput(GLFWwindow* window, int key, int scancode, int action, int mod
 
 void mouseCallback(GLFWwindow* window, double xpos, double ypos) {
     if (firstMouse) {
-        xpos = centerX;
-        ypos = centerY;
+        lastX = centerX;
+        lastY = centerY;
         firstMouse = false;
     }
 
