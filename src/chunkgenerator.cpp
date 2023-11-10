@@ -41,7 +41,7 @@ std::vector<Cube> ChunkGenerator::getVisible(const std::vector<Cube>& chunk) {
 	float distance = 0.01f;
 
 	for(int i = 0; i < chunk.size(); i++) {
-		std::array<Ray, 1> rays = {
+		std::array<Ray, 6> rays = {
 			Ray(glm::vec3(chunk[i].transform.position), glm::vec3(1.0f, 0.0f, 0.0f), distance),
 			Ray(glm::vec3(chunk[i].transform.position), glm::vec3(-1.0f, 0.0f, 0.0f), distance),
 			Ray(glm::vec3(chunk[i].transform.position), glm::vec3(0.0f, 1.0f, 0.0f), distance),
