@@ -10,8 +10,10 @@
 #include "chunkgenerator.hpp"
 #include "camera.hpp"
 #include "cube.hpp"
+#include "line.hpp"
 #include "renderer.hpp"
 #include "shader.hpp"
+#include "triangle.hpp"
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 GLFWwindow* initialize();
@@ -50,6 +52,7 @@ int main() {
     // Shader Setup
     // --------------------------------------------------------------------------------------------
     std::shared_ptr<Shader> shader = ShaderFactory::create("default");
+    std::shared_ptr<Shader> lineShader = ShaderFactory::create("line");
 
     // --------------------------------------------------------------------------------------------
     // Camera Setup
@@ -76,6 +79,26 @@ int main() {
     long seed = distribution(generator);
     ChunkGenerator chunkGenerator(seed);
     std::vector<std::vector<Cube>> chunks = chunkGenerator.generateChunks(drawDistance, camera.transform.position);
+    
+    std::array<Triangle, 12> triangles = chunks[0][1].getTriangles();
+    
+    std::array<Ray, 6> rays = {
+        Ray(glm::vec3(chunks[0][0].transform.position), glm::vec3(0.0f, 0.0f, 1.0f), CUBE_SIZE),
+        Ray(glm::vec3(chunks[0][0].transform.position), glm::vec3(1.0f, 0.0f, 0.0f), CUBE_SIZE),
+        Ray(glm::vec3(chunks[0][0].transform.position), glm::vec3(0.0f, 0.0f, -1.0f), CUBE_SIZE),
+        Ray(glm::vec3(chunks[0][0].transform.position), glm::vec3(-1.0f, 0.0f, 0.0f), CUBE_SIZE),
+        Ray(glm::vec3(chunks[0][0].transform.position), glm::vec3(0.0f, 1.0f, 0.0f), CUBE_SIZE),
+        Ray(glm::vec3(chunks[0][0].transform.position), glm::vec3(0.0f, -1.0f, 0.0f), CUBE_SIZE),
+    };
+
+    std::array<Line, 6> lines{
+        Line(rays[0].origin, rays[0].origin + rays[0].direction * rays[0].distance),
+        Line(rays[1].origin, rays[1].origin + rays[1].direction * rays[1].distance),
+        Line(rays[2].origin, rays[2].origin + rays[2].direction * rays[2].distance),
+        Line(rays[3].origin, rays[3].origin + rays[3].direction * rays[3].distance),
+        Line(rays[4].origin, rays[4].origin + rays[4].direction * rays[4].distance),
+        Line(rays[5].origin, rays[5].origin + rays[5].direction * rays[5].distance)
+    };
 
     // --------------------------------------------------------------------------------------------
     // Texture Setup
@@ -110,6 +133,7 @@ int main() {
     // --------------------------------------------------------------------------------------------
     glm::mat4 projection = glm::perspective(camera.fov, camera.aspect, camera.near, camera.far);
     shader->set("projection", projection);
+    lineShader->set("projection", projection);
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
@@ -122,13 +146,22 @@ int main() {
         // set camera view matrix, as camera moves
         glm::mat4 view = glm::lookAt(camera.transform.position, camera.transform.position + camera.front, camera.up);
         shader->set("view", view);
+        lineShader->set("view", view);
 
-        // render visible chunks
-        for (const std::vector<Cube>& chunk : chunks) {
-            std::vector<Cube> cubes = chunkGenerator.getVisible(chunk);
-            for (const Cube& cube : cubes) {
-                Renderer::draw(cube, shader);
+        // Render initial cube and rays casted around it
+        // render each triangle hit on next cube
+        Renderer::draw(chunks[0][0], shader);
+        for (int i = 0; i < rays.size(); i++) {
+            for (int j = 0; j < triangles.size(); j++) {
+                if (Intersection::raycastTriangle(rays[i], triangles[j]) != -1) {
+                    float t = Intersection::raycastTriangle(rays[i], triangles[j]);
+                    Renderer::draw(triangles[j], chunks[0][1].transform, shader);
+                }
             }
+        }
+
+        for (const Line& line : lines) {
+            Renderer::draw(line, glm::vec3(0.0f, 1.0f, 0.0f), lineShader);
         }
 
         // swap buffers and poll for input events

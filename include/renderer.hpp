@@ -8,8 +8,10 @@
 #include <memory>
 
 #include "cube.hpp"
+#include "line.hpp"
 #include "shader.hpp"
 #include "square.hpp"
+#include "triangle.hpp"
 
 class Renderer {
 public:
@@ -20,7 +22,8 @@ public:
 	}
 
 	static void draw(const Cube& cube, const std::shared_ptr<Shader>& shader);
-	static void draw(const Square& square, const std::shared_ptr<Shader>& shader);
+	static void draw(const Line& line, const glm::vec3& color, const std::shared_ptr<Shader>& shader);
+	static void draw(const Triangle& triangle, const Transform& transform, const std::shared_ptr<Shader>& shader);
 
 private:
 	static uint32_t VAO;
