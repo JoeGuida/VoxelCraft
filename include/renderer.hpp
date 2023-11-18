@@ -9,6 +9,7 @@
 
 #include "cube.hpp"
 #include "line.hpp"
+#include "ray.hpp"
 #include "shader.hpp"
 #include "square.hpp"
 #include "triangle.hpp"
@@ -23,6 +24,7 @@ public:
 
 	static void draw(const Cube& cube, const std::shared_ptr<Shader>& shader);
 	static void draw(const Line& line, const glm::vec3& color, const std::shared_ptr<Shader>& shader);
+	static void draw(const Ray& ray, const glm::vec3& color, float distance, const std::shared_ptr<Shader>& shader);
 	static void draw(const Triangle& triangle, const Transform& transform, const std::shared_ptr<Shader>& shader);
 
 private:

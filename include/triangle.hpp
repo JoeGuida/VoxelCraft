@@ -32,6 +32,7 @@ public:
 	glm::vec3 getA() const { return a; }
 	glm::vec3 getB() const { return b; }
 	glm::vec3 getC() const { return c; }
+	glm::vec3 getNormal() const { return normal; }
 	std::array<float, 24> getVertices() const;
 
 private:
@@ -40,4 +41,7 @@ private:
 	glm::vec3 c;
 	glm::vec3 normal;
 };
+
+Triangle operator*(const Triangle& triangle, const glm::mat4& mat);
+
 #endif

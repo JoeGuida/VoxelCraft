@@ -29,7 +29,7 @@ public:
 
 	std::array<uint32_t, 36> getIndices() const;
 	std::array<float, 192> getVertices() const;
-	std::array<Triangle, 12> getTriangles() const;
+	std::array<Triangle, 6> getTriangles() const;
 
 	Material material;
 	Transform transform;

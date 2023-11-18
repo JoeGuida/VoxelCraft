@@ -7,17 +7,10 @@ class Ray {
 public:
 	Ray(const glm::vec3& origin, const glm::vec3& direction) :
 		origin(origin),
-		direction(direction),
-		distance(INFINITY) {}
-
-	Ray(const glm::vec3& origin, const glm::vec3& direction, float distance) : 
-		origin(origin), 
-		direction(direction),
-		distance(distance) {}
+		direction(direction) {}
 
 	glm::vec3 origin;
 	glm::vec3 direction;
-	float distance;
 };
 
 #endif

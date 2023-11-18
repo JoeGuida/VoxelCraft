@@ -62,6 +62,22 @@ public:
 		return *this;
 	}
 
+	glm::mat4 model() const {
+		glm::mat4 model = glm::mat4(1.0f);
+		glm::vec3 rot(rotation);
+
+		model = glm::translate(model, position);
+		if (fabsf(rotation.pitch) > 0.0f)
+			model = glm::rotate(model, rot.x, glm::vec3(1.0f, 0.0f, 0.0f));
+		if (fabsf(rotation.yaw) > 0.0f)
+			model = glm::rotate(model, rot.y, glm::vec3(0.0f, 1.0f, 0.0f));
+		if (fabsf(rotation.roll) > 0.0f)
+			model = glm::rotate(model, rot.z, glm::vec3(0.0f, 0.0f, -1.0f));
+		model = glm::scale(model, scale);
+
+		return model;
+	}
+
 	glm::vec3 position;
 	Rotation rotation;
 	glm::vec3 scale;

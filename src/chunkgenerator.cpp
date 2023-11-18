@@ -10,7 +10,7 @@ std::vector<std::vector<Cube>> ChunkGenerator::generateChunks(float drawDistance
 	Cube cube(
 		Material(glm::vec3(0.5f)),
 		Transform(glm::vec3(0.0f)),
-		std::array<uint32_t, 3> { 1, 0, 2}
+		std::array<uint32_t, 3> { 1, 0, 2 }
 	);
 	std::vector<Cube> cubes;
 
@@ -21,7 +21,6 @@ std::vector<std::vector<Cube>> ChunkGenerator::generateChunks(float drawDistance
 
 	// generate cubes in each chunk
 	for (int i = 0; i < numChunks; i++) {
-
 		for (unsigned int y = 0; y < CHUNK_SIZE.y; y++) {
 			for (unsigned int z = 0; z < CHUNK_SIZE.z; z++) {
 				for (unsigned int x = 0; x < CHUNK_SIZE.x; x++) {
@@ -38,29 +37,26 @@ std::vector<std::vector<Cube>> ChunkGenerator::generateChunks(float drawDistance
 
 std::vector<Cube> ChunkGenerator::getVisible(const std::vector<Cube>& chunk) {
 	std::vector<Cube> visibleCubes;
-	float distance = 0.01f;
 
-	for(int i = 0; i < chunk.size(); i++) {
+	for(int i = 0; i < 16; i++) {
+		bool visible = true;
 		std::array<Ray, 6> rays = {
-			Ray(glm::vec3(chunk[i].transform.position), glm::vec3(1.0f, 0.0f, 0.0f), distance),
-			Ray(glm::vec3(chunk[i].transform.position), glm::vec3(-1.0f, 0.0f, 0.0f), distance),
-			Ray(glm::vec3(chunk[i].transform.position), glm::vec3(0.0f, 1.0f, 0.0f), distance),
-			Ray(glm::vec3(chunk[i].transform.position), glm::vec3(1.0f, -1.0f, 0.0f), distance),
-			Ray(glm::vec3(chunk[i].transform.position), glm::vec3(0.0f, 0.0f, 1.0f), distance),
-			Ray(glm::vec3(chunk[i].transform.position), glm::vec3(0.0f, 0.0f, -1.0f), distance),
+			Ray(chunk[i].transform.position, glm::vec3(1.0f, 0.0f, 0.0f)),
+			Ray(chunk[i].transform.position, glm::vec3(-1.0f, 0.0f, 0.0f)),
+			Ray(chunk[i].transform.position, glm::vec3(0.0f, 1.0f, 0.0f)),
+			Ray(chunk[i].transform.position, glm::vec3(0.0f, -1.0f, 0.0f)),
+			Ray(chunk[i].transform.position, glm::vec3(0.0f, 0.0f, 1.0f)),
+			Ray(chunk[i].transform.position, glm::vec3(0.0f, 0.0f, -1.0f)),
 		};
 
-		bool visible = false;
-		for (const Ray& ray : rays) {
-			for (const Triangle& triangle : chunk[i].getTriangles()) {
-				if (Intersection::raycastTriangle(ray, triangle) == -1) {
-					visible = true;
+		for (const Triangle& triangle : chunk[i].getTriangles()) {
+			Triangle modelTriangle = triangle * chunk[i].transform.model();
+			for (const Ray& ray : rays) {
+				float t = Intersection::raycastTriangle(ray, modelTriangle, CUBE_SIZE);
+				if (Intersection::raycastTriangle(ray, modelTriangle, CUBE_SIZE) != -1) {
+					visible = false;
 				}
 			}
-		}
-
-		if (visible) {
-			visibleCubes.push_back(chunk[i]);
 		}
 	}
 

@@ -39,14 +39,14 @@ float Intersection::raycastPlane(const Ray& ray, const Plane& plane) {
 	return -1;
 }
 
-float Intersection::raycastTriangle(const Ray& ray, const Triangle& triangle) {
+float Intersection::raycastTriangle(const Ray& ray, const Triangle& triangle, float maxDistance) {
 	Plane plane = planeFromTriangle(triangle);
 	float t = raycastPlane(ray, plane);
-	if (t < 0.0f) {
-		return t;
+	if (t < 0.0f || t > maxDistance) {
+		return -1;
 	}
-	glm::vec3 result = ray.origin + ray.direction * t;
 
+	glm::vec3 result = ray.origin + ray.direction * t;
 	glm::vec3 bary = barycentric(result, triangle);
 	if (bary.x >= 0.0f && bary.x <= 1.0f &&
 		bary.y >= 0.0f && bary.y <= 1.0f &&
